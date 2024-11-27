@@ -82,7 +82,7 @@ get fullName(){
 }
 }
 let abrar=new PersonCl('Abrar Azad',1880);
-let sunny=new PersonCl('SunnyBlondey',1998);
+let sunny=new PersonCl('Sunny Blondey',1998);
 console.log(abrar);
 abrar.calcAge();
 sunny.calcAge();
@@ -91,8 +91,17 @@ PersonCl.prototype.greet=function(){
 }
 abrar.greet();
 console.log(PersonCl.prototype);
-
-
+class StudentCl extends PersonCl{
+constructor(fullName,DOB,course){
+    super(fullName,DOB);
+    this.course=course;
+}
+displayStudentBio(){
+    console.log(`I am ${this.fullName} and I have opted for ${this.course}`);
+}
+}
+let nadiya=new StudentCl('Nadiya Tehreem',1997,"M.tech")
+nadiya.displayStudentBio();
 
 let account={
 name:'Hanan Mir',
@@ -119,8 +128,23 @@ let PersonNew={
 const shahid=Object.create(PersonNew);
 shahid.init('Shahid Azad',2020);
 shahid.calcAge();
+let studentProto=Object.create(PersonNew);
+studentProto.init=function(fname,bYear,course){
+    PersonNew.init.call(this,fname,bYear);
+    this.course=course
+}
+studentProto.Introduction=function(){
+    console.log(`Hi my name is ${this.firstName} and i have enrolled in ${this.course}`);
+}
+let Rahul=Object.create(studentProto);
+Rahul.init('Rahul Sharma',1998,'B.Arch');
+Rahul.Introduction();
 //--------------------------------CODING CHALLENGE #2------------------------------
 class CarCl{
+    constructor(speed,make){
+        this.speed=speed;
+        this.make=make;
+    }
     get speedUS(){
         return this.speed/1.6;
     }
@@ -136,14 +160,99 @@ brake(){
     console.log(`Brake applied now the speed of`,this.speed);
 }
 }
+class ElectricCarEVCl extends CarCl{
+    constructor(speed,make,currentbattery){
+        super(speed,make);
+        this.currentbattery=currentbattery;
+    }
+    #charge(charge){
+        this.currentbattery=charge;
+        return this;
+    }
+    accelarate(){
+        this.speed+=20;
+        this.currentbattery-=1;
+        console.log(`${this.make} is going with the speed of ${this.speed}km/h and battery is ${this.currentbattery}%`)
+        return this;
+    }
+    brake(){
+        this.speed-=5;
+    console.log(`Brake applied now the speed of ${this.make}`,this.speed);
+    return this;
+    }
+}
+let rivian= new ElectricCarEVCl(120,"Rivian",23);
+rivian.accelarate();
+rivian.accelarate().brake();
 let hyundai=new CarCl();
 hyundai.speedUS=60;
 console.log(hyundai.speedUS);
 hyundai.accelarate();
 hyundai.brake();
+let ElectricCarEv=function(make,speed,currentbattery){
+Car.call(this,make,speed);
+this.currentbattery=currentbattery;
+//  ElectricCarEv.prototype.chargeBattery=function(chargeTo)
+//  {
+//     this.currentbattery=chargeTo;
+// }
+// ElectricCarEv.prototype.accelarate=function()
+// {
+//     this.speed+=20;
+//     this.currentbattery-=1;
+//     console.log(this.make);
+//     console.log(`${this.make} is going with the speed of ${this.speed}km/h and battery is ${this.currentbattery}%`)
+// }
+}
+ElectricCarEv.prototype=Object.create(Car.prototype);
+ElectricCarEv.prototype.chargeBattery=function(chargeTo)
+ {
+    this.currentbattery=chargeTo;
+    console.log(`charge battery to:${this.currentbattery}`);
+}
+ElectricCarEv.prototype.accelarate=function()
+{
+    this.speed+=20;
+    this.currentbattery-=1;
+    console.log(`${this.make} is going with the speed of ${this.speed}km/h and battery is ${this.currentbattery}%`)
+}
 
+let Tesla=new ElectricCarEv("Tesla",120,90);
+Tesla.chargeBattery(99);
+Tesla.accelarate();
+Tesla.brake();
 
-
+class Account{
+    #movements=[];
+    #pin;
+constructor(name,pin){
+    this.name=name;
+    this.locale=navigator.language;
+    this.#pin=pin;
+    console.log(`Your account has been sucessfully created, ${name}`);
+}
+addDeposit(val){
+    this.#movements.push(val);
+    console.log(`Deposited ${val} to account ${this.#movements}`)
+}
+addWithdraw(val){
+    this.addDeposit(-val);
+    console.log(`withdraw ${val} to account ${[this.#movements]}`);
+}
+isEligible(val){
+return true;
+}
+loanRequest(val){
+    if(this.isEligible(val)){
+        console.log(`Loan Approved`)
+    }
+}
+}
+let hananNew=new Account('Hanan',2324);
+hananNew.addDeposit(890);
+hananNew.addDeposit(998);
+hananNew.loanRequest(900);
+// console.log(#movements);
 
 
 
